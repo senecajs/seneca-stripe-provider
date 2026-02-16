@@ -1,11 +1,6 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
 /* Copyright © 2026 Seneca Project Contributors, MIT License. */
-const stripe_1 = __importDefault(require("stripe"));
-const package_json_1 = __importDefault(require("../package.json"));
+import Stripe from 'stripe';
+import Pkg from '../package.json' with { type: 'json' };
 function StripeProvider(options) {
     const seneca = this;
     const entityBuilder = seneca.export('provider/entityBuilder');
@@ -14,7 +9,7 @@ function StripeProvider(options) {
         return {
             ok: true,
             name: 'stripe',
-            version: package_json_1.default.version,
+            version: Pkg.version,
         };
     }
     entityBuilder(seneca, {
@@ -46,7 +41,7 @@ function StripeProvider(options) {
             this.fail('secretkey-missing-keymap', res);
         }
         let secretKey = res.keymap.secret.value;
-        seneca.shared.sdk = new stripe_1.default(secretKey);
+        seneca.shared.sdk = new Stripe(secretKey);
     });
     return {
         exports: {
@@ -59,7 +54,7 @@ const defaults = {
     debug: false,
 };
 Object.assign(StripeProvider, { defaults });
-exports.default = StripeProvider;
+export default StripeProvider;
 if ('undefined' !== typeof module) {
     module.exports = StripeProvider;
 }

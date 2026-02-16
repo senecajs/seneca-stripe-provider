@@ -1,7 +1,7 @@
 /* Copyright © 2026 Seneca Project Contributors, MIT License. */
 import Stripe from 'stripe'
 
-import Pkg from '../package.json'
+import Pkg from '../package.json' with { type: 'json' }
 
 type StripeProviderOptions = {
   debug: boolean

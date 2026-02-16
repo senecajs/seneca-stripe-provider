@@ -20,23 +20,19 @@ function StripeProvider(this: any, options: StripeProviderOptions) {
     }
   }
 
-  seneca.prepare(async function(this: any) {
-    let seneca = this
-
-    let res = await seneca.post('sys:provider,get:keymap,provider:stripe')
-
-    if (!res.ok) {
-      this.fail('secretkey-missing-keymap', res)
-    }
-
-    let secretKey = res.keymap.secret.value
-
-    this.shared.sdk = new Stripe(secretKey)
+  seneca.prepare(async function (this: any) {
+    // let seneca = this
+    //
+    // let res = await seneca.post('sys:provider,get:keymap,provider:stripe')
+    //
+    // if (!res.ok) {
+    //   this.fail('secretkey-missing-keymap', res)
+    // }
+    //
+    // let secretKey = res.keymap.secret.value
+    //
+    // this.shared.sdk = new Stripe('')
   })
-
-  return {
-    exports: {},
-  }
 }
 
 // Default options.

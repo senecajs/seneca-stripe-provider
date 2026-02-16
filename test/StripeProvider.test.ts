@@ -10,18 +10,17 @@ import Seneca from 'seneca'
 import StripeProviderDoc from '..'
 import StripeProvider from '..'
 
-describe('tangocard-provider', () => {
-  test('happy', async () => {
-    expect(StripeProvider).toBeDefined()
-    expect(StripeProviderDoc).toBeDefined()
+describe('stripe-provider', () => {
+  test('load-plugin', async () => {
+    expect(StripeProvider).exist()
+    expect(StripeProviderDoc).exist()
 
     const seneca = await makeSeneca()
+    expect(seneca.find_plugin('StripeProvider')).exist()
 
-    expect(
-      await seneca.post('sys:provider,provider:tangocard,get:info'),
-    ).toMatchObject({
+    expect(await seneca.post('sys:provider,provider:stripe,get:info')).contain({
       ok: true,
-      name: 'tangocard',
+      name: 'stripe',
     })
   })
 
@@ -36,25 +35,23 @@ async function makeSeneca() {
     .test()
     .use('promisify')
     .use('entity')
-    .use('env', {
-      // debug: true,
-      file: [__dirname + '/local-env.js;?'],
-      var: {
-        $STRIPE_secret: String,
-      },
-    })
-    .use('provider', {
-      provider: {
-        stripe: {
-          keys: {
-            secret: { value: '$STRIPE_SECRET' },
-          },
-        },
-      },
-    })
-    .use(StripeProvider, {
-      // fetch: Fetch,
-    })
+    // .use('env', {
+    // debug: true,
+    //   file: [__dirname + '/local-env.js;?'],
+    //   var: {
+    //     $STRIPE_SECRET: String,
+    //   },
+    // })
+    // .use('provider', {
+    //   provider: {
+    //     stripe: {
+    //       keys: {
+    //         secret: { value: '$STRIPE_SECRET' },
+    //       },
+    //     },
+    //   },
+    // })
+    .use(StripeProvider, {})
 
   return seneca.ready()
 }

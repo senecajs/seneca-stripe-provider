@@ -1,18 +1,14 @@
 /* Copyright © 2026 Seneca Project Contributors, MIT License. */
 
-import { dirname } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { describe, test } from 'node:test'
 import { expect } from '@hapi/code'
-
-const __dirname = dirname(fileURLToPath(import.meta.url))
 
 import Seneca from 'seneca'
 // import SenecaMsgTest from 'seneca-msg-test'
 // import { Maintain } from '@seneca/maintain'
 
-import StripeProviderDoc from '../src/StripeProviderDoc.ts'
-import StripeProvider from '../src/StripeProvider.ts'
+import StripeProviderDoc from '..'
+import StripeProvider from '..'
 
 describe('stripe-provider', () => {
   test('load-plugin', async () => {
@@ -41,7 +37,7 @@ async function makeSeneca() {
     .use('entity')
     .use('env', {
       // debug: true,
-      file: [__dirname + '/local-env.js;?'],
+      file: [__dirname + '/../test/local-env.js;?'],
       var: {
         $STRIPE_SECRET: String,
       },

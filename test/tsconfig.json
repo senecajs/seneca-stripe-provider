@@ -1,18 +1,15 @@
 {
   "compilerOptions": {
     "esModuleInterop": true,
-    "isolatedModules": true,
     "module": "nodenext",
-    "moduleResolution": "nodenext",
     "noEmitOnError": true,
-    "outDir": "dist",
+    "outDir": "../dist-test",
+    "rootDir": ".",
     "resolveJsonModule": true,
-    "rootDir": "src",
     "sourceMap": true,
     "strict": true,
     "target": "ES2022",
-    "declaration": true,
-    "declarationMap": true
+    "composite": true
   },
-  "exclude": ["test", "dist", "node_modules"]
+  "references": [{ "path": "../src" }]
 }

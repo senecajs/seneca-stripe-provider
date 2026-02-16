@@ -1,6 +1,6 @@
 ![Seneca Stripe-Provider](http://senecajs.org/files/assets/seneca-logo.png)
 
-> _Seneca Tangocard-Provider_ is a plugin for [Seneca](http://senecajs.org)
+> _Seneca Stripe-Provider_ is a plugin for [Seneca](http://senecajs.org)
 
 Provides access to the Tangocard API using the Seneca _provider_
 convention. Tangocard API entities are represented as Seneca entities so

@@ -11,6 +11,9 @@ on:
 
 jobs:
   build:
+    environment: test
+    env:
+      STRIPE_SECRET: ${{ secrets.STRIPE_SECRET }}
     timeout-minutes: 6
 
     strategy:

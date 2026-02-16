@@ -1,9 +1,8 @@
-![Seneca Tangocard-Provider](http://senecajs.org/files/assets/seneca-logo.png)
+![Seneca Stripe-Provider](http://senecajs.org/files/assets/seneca-logo.png)
 
-> _Seneca Tangocard-Provider_ is a plugin for [Seneca](http://senecajs.org)
+> _Seneca Stripe-Provider_ is a plugin for [Seneca](http://senecajs.org)
 
-
-Provides access to the Tangocard API using the Seneca *provider*
+Provides access to the Tangocard API using the Seneca _provider_
 convention. Tangocard API entities are represented as Seneca entities so
 that they can be accessed using the Seneca entity API and messages.
 
@@ -20,16 +19,12 @@ NOTE: underlying third party SDK needs to be replaced as out of date and has a s
 [![DeepScan grade](https://deepscan.io/api/teams/5016/projects/19462/branches/505954/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=5016&pid=19462&bid=505954)
 [![Maintainability](https://api.codeclimate.com/v1/badges/f76e83896b731bb5d609/maintainability)](https://codeclimate.com/github/senecajs/seneca-tangocard-provider/maintainability)
 
-
 | ![Voxgig](https://www.voxgig.com/res/img/vgt01r.png) | This open source module is sponsored and supported by [Voxgig](https://www.voxgig.com). |
-|---|---|
-
+| ---------------------------------------------------- | --------------------------------------------------------------------------------------- |
 
 ## Quick Example
 
-
 ```js
-
 // Setup - get the key value (<SECRET>) separately from a vault or
 // environment variable.
 Seneca()
@@ -38,7 +33,7 @@ Seneca()
     var: {
       $TANGOCARD_APIKEY: String,
       $TANGOCARD_USERTOKEN: String,
-    }
+    },
   })
   .use('provider', {
     provider: {
@@ -46,13 +41,14 @@ Seneca()
         keys: {
           apikey: { value: '$TANGOCARD_APIKEY' },
           usertoken: { value: '$TANGOCARD_USERTOKEN' },
-        }
-      }
-    }
+        },
+      },
+    },
   })
   .use('tangocard-provider')
 
-let board = await seneca.entity('provider/tangocard/board')
+let board = await seneca
+  .entity('provider/tangocard/board')
   .load$('<tangocard-board-id>')
 
 Console.log('BOARD', board)
@@ -61,7 +57,6 @@ board.desc = 'New description'
 board = await board.save$()
 
 Console.log('UPDATED BOARD', board)
-
 ```
 
 ## Install
@@ -70,17 +65,14 @@ Console.log('UPDATED BOARD', board)
 $ npm install @seneca/tangocard-provider @seneca/env
 ```
 
-
-
 <!--START:options-->
-
 
 ## Options
 
-* `debug` : boolean <i><small>false</small></i>
-
+- `debug` : boolean <i><small>false</small></i>
 
 Set plugin options when loading with:
+
 ```js
 
 
@@ -89,28 +81,22 @@ seneca.use('TangocardProvider', { name: value, ... })
 
 ```
 
-
-<small>Note: <code>foo.bar</code> in the list above means 
-<code>{ foo: { bar: ... } }</code></small> 
-
-
+<small>Note: <code>foo.bar</code> in the list above means
+<code>{ foo: { bar: ... } }</code></small>
 
 <!--END:options-->
 
 <!--START:action-list-->
 
-
 ## Action Patterns
 
-* [role:entity,base:tangocard,cmd:load,name:repo,zone:provider](#-roleentitybasetangocardcmdloadnamerepozoneprovider-)
-* [role:entity,base:tangocard,cmd:save,name:repo,zone:provider](#-roleentitybasetangocardcmdsavenamerepozoneprovider-)
-* [sys:provider,get:info,provider:tangocard](#-sysprovidergetinfoprovidertangocard-)
-
+- [role:entity,base:tangocard,cmd:load,name:repo,zone:provider](#-roleentitybasetangocardcmdloadnamerepozoneprovider-)
+- [role:entity,base:tangocard,cmd:save,name:repo,zone:provider](#-roleentitybasetangocardcmdsavenamerepozoneprovider-)
+- [sys:provider,get:info,provider:tangocard](#-sysprovidergetinfoprovidertangocard-)
 
 <!--END:action-list-->
 
 <!--START:action-desc-->
-
 
 ## Action Descriptions
 
@@ -118,23 +104,18 @@ seneca.use('TangocardProvider', { name: value, ... })
 
 Load Tangocard repository data into an entity.
 
+---
 
-
-----------
 ### &laquo; `role:entity,base:tangocard,cmd:save,name:repo,zone:provider` &raquo;
 
 Update Tangocard repository data from an entity.
 
+---
 
-
-----------
 ### &laquo; `sys:provider,get:info,provider:tangocard` &raquo;
 
 Get information about the provider.
 
-
-
-----------
-
+---
 
 <!--END:action-desc-->

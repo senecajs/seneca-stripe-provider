@@ -1,0 +1,1 @@
+{"version":3,"file":"StripeProvider.d.ts","sourceRoot":"","sources":["../src/StripeProvider.ts"],"names":[],"mappings":"AAKA,KAAK,qBAAqB,GAAG;IAC3B,KAAK,EAAE,OAAO,CAAA;CACf,CAAA;AAED,iBAAS,cAAc,CAAC,IAAI,EAAE,GAAG,EAAE,OAAO,EAAE,qBAAqB;;;;EA2DhE;AASD,eAAe,cAAc,CAAA"}

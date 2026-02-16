@@ -35,23 +35,23 @@ async function makeSeneca() {
     .test()
     .use('promisify')
     .use('entity')
-    // .use('env', {
-    // debug: true,
-    //   file: [__dirname + '/local-env.js;?'],
-    //   var: {
-    //     $STRIPE_SECRET: String,
-    //   },
-    // })
-    // .use('provider', {
-    //   provider: {
-    //     stripe: {
-    //       keys: {
-    //         secret: { value: '$STRIPE_SECRET' },
-    //       },
-    //     },
-    //   },
-    // })
-    .use(StripeProvider, {})
+    .use('env', {
+      // debug: true,
+      file: [__dirname + '/../test/local-env.js;?'],
+      var: {
+        $STRIPE_SECRET: String,
+      },
+    })
+    .use('provider', {
+      provider: {
+        stripe: {
+          keys: {
+            secret: { value: '$STRIPE_SECRET' },
+          },
+        },
+      },
+    })
+    .use(StripeProvider)
 
   return seneca.ready()
 }

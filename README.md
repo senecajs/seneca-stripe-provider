@@ -1,4 +1,4 @@
-![Seneca Tangocard-Provider](http://senecajs.org/files/assets/seneca-logo.png)
+![Seneca Stripe-Provider](http://senecajs.org/files/assets/seneca-logo.png)
 
 > _Seneca Tangocard-Provider_ is a plugin for [Seneca](http://senecajs.org)
 

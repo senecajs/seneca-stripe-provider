@@ -5,8 +5,6 @@ import { describe, test } from 'node:test'
 import { expect } from '@hapi/code'
 
 import Seneca from 'seneca'
-// import SenecaMsgTest from 'seneca-msg-test'
-// import { Maintain } from '@seneca/maintain'
 
 import StripeProviderDoc from '..'
 import StripeProvider from '..'
@@ -32,14 +30,30 @@ describe('stripe-provider', () => {
   })
 
   test('create-checkout', async () => {
-    expect(StripeProvider).exist()
-    expect(StripeProviderDoc).exist()
-  })
+    if (CONFIG.STRIPE_SECRET) {
+      const seneca = await makeSeneca()
 
-  // test('messages', async () => {
-  //   const seneca = await makeSeneca()
-  //   await (SenecaMsgTest(seneca, BasicMessages)())
-  // })
+      const checkoutRes = await seneca
+        .entity('provider/stripe/checkout')
+        .save$({
+          item: {
+            price_data: {
+              currency: 'usd',
+              product_data: { name: 'Item - $1' },
+              unit_amount: 100,
+            },
+            quantity: 1,
+          },
+          mode: 'payment',
+          success_url:
+            'https://store.example/success?session_id={CHECKOUT_SESSION_ID}',
+          cancel_url: 'https://store.example/cancel',
+        })
+
+      expect(checkoutRes.ok).true()
+      expect(checkoutRes.url).exists()
+    }
+  })
 })
 
 async function makeSeneca() {

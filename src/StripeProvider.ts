@@ -51,16 +51,19 @@ function StripeProvider(this: any, options: StripeProviderOptions) {
           save: {
             action: async function (this: any, _entize: any, msg: any) {
               const seneca = this
+
               const { item, mode, success_url, cancel_url }: CheckoutQuery =
                 msg.q
 
+              const payload = {
+                line_items: [item],
+                mode,
+                success_url,
+                cancel_url,
+              }
+
               const session: { url: string } =
-                await seneca.shared.skd.checkout.sessions.create({
-                  line_items: [item],
-                  mode,
-                  success_url,
-                  cancel_url,
-                })
+                await seneca.shared.sdk.checkout.sessions.create(payload)
 
               if (!session?.url) {
                 return {

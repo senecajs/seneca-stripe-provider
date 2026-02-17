@@ -28,12 +28,13 @@ function StripeProvider(options) {
                         action: async function (_entize, msg) {
                             const seneca = this;
                             const { item, mode, success_url, cancel_url } = msg.q;
-                            const session = await seneca.shared.skd.checkout.sessions.create({
+                            const payload = {
                                 line_items: [item],
                                 mode,
                                 success_url,
                                 cancel_url,
-                            });
+                            };
+                            const session = await seneca.shared.sdk.checkout.sessions.create(payload);
                             if (!session?.url) {
                                 return {
                                     ok: false,

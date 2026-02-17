@@ -41,8 +41,6 @@ const Fs = __importStar(require("fs"));
 const node_test_1 = require("node:test");
 const code_1 = require("@hapi/code");
 const seneca_1 = __importDefault(require("seneca"));
-// import SenecaMsgTest from 'seneca-msg-test'
-// import { Maintain } from '@seneca/maintain'
 const __1 = __importDefault(require(".."));
 const __2 = __importDefault(require(".."));
 const CONFIG = {};
@@ -61,13 +59,27 @@ if (Fs.existsSync(__dirname + '/../test/local-config.js')) {
         });
     });
     (0, node_test_1.test)('create-checkout', async () => {
-        (0, code_1.expect)(__2.default).exist();
-        (0, code_1.expect)(__1.default).exist();
+        if (CONFIG.STRIPE_SECRET) {
+            const seneca = await makeSeneca();
+            const checkoutRes = await seneca
+                .entity('provider/stripe/checkout')
+                .save$({
+                item: {
+                    price_data: {
+                        currency: 'usd',
+                        product_data: { name: 'Item - $1' },
+                        unit_amount: 100,
+                    },
+                    quantity: 1,
+                },
+                mode: 'payment',
+                success_url: 'https://store.example/success?session_id={CHECKOUT_SESSION_ID}',
+                cancel_url: 'https://store.example/cancel',
+            });
+            (0, code_1.expect)(checkoutRes.ok).true();
+            (0, code_1.expect)(checkoutRes.url).exists();
+        }
     });
-    // test('messages', async () => {
-    //   const seneca = await makeSeneca()
-    //   await (SenecaMsgTest(seneca, BasicMessages)())
-    // })
 });
 async function makeSeneca() {
     const seneca = (0, seneca_1.default)({ legacy: false })

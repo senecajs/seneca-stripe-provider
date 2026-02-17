@@ -43,15 +43,12 @@
     "@seneca/doc": "^8.0.0",
     "@seneca/maintain": "^0.1.0",
     "@types/node": "^25.2.3",
-    "gubu": "^9.0.0",
     "prettier": "3.8.1",
-    "seneca-msg-test": "^4.1.0",
     "typescript": "^5.9.3"
   },
   "peerDependencies": {
     "@seneca/entity-util": ">=3",
     "@seneca/provider": ">=3",
-    "gubu": ">=9",
     "seneca": ">=3||>=4.0.0-rc2",
     "seneca-entity": ">=26",
     "seneca-promisify": ">=3"

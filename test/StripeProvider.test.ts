@@ -51,6 +51,7 @@ describe('stripe-provider', () => {
         })
 
       expect(checkoutRes.ok).true()
+      expect(checkoutRes.id).exists()
       expect(checkoutRes.url).exists()
     }
   })

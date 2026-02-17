@@ -45,6 +45,7 @@ function StripeProvider(options) {
                                 }
                                 return {
                                     ok: true,
+                                    id: session.id,
                                     url: session.url,
                                 };
                             },

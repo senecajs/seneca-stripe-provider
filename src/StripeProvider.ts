@@ -64,7 +64,7 @@ function StripeProvider(this: any, options: StripeProviderOptions) {
                   cancel_url,
                 }
 
-                const session: { url: string } =
+                const session: { id: string; url: string } =
                   await seneca.shared.sdk.checkout.sessions.create(payload)
 
                 if (!session?.url) {
@@ -76,6 +76,7 @@ function StripeProvider(this: any, options: StripeProviderOptions) {
 
                 return {
                   ok: true,
+                  id: session.id,
                   url: session.url,
                 }
               },

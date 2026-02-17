@@ -77,6 +77,7 @@ if (Fs.existsSync(__dirname + '/../test/local-config.js')) {
                 cancel_url: 'https://store.example/cancel',
             });
             (0, code_1.expect)(checkoutRes.ok).true();
+            (0, code_1.expect)(checkoutRes.id).exists();
             (0, code_1.expect)(checkoutRes.url).exists();
         }
     });

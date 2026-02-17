@@ -3,6 +3,25 @@ import Stripe from 'stripe'
 
 import Pkg from '../package.json'
 
+type Currency = 'usd' | 'eur' | 'gbp'
+type Mode = 'payment' | 'subscription' | 'setup'
+
+type Item = {
+  price_data: {
+    currency: Currency
+    product_data: { name: string }
+    unit_amount: number
+  }
+  quantity: number
+}
+
+type CheckoutQuery = {
+  item: Item
+  mode: Mode
+  success_url: string
+  cancel_url: string
+}
+
 type StripeProviderOptions = {
   debug: boolean
 }
@@ -30,15 +49,29 @@ function StripeProvider(this: any, options: StripeProviderOptions) {
       checkout: {
         cmd: {
           save: {
-            action: async function (this: any, entize: any, msg: any) {
+            action: async function (this: any, _entize: any, msg: any) {
               const seneca = this
+              const { item, mode, success_url, cancel_url }: CheckoutQuery =
+                msg.q
 
-              // const session = await seneca.shared.skd.checkout.sessions.create({
-              // });
+              const session: { url: string } =
+                await seneca.shared.skd.checkout.sessions.create({
+                  line_items: [item],
+                  mode,
+                  success_url,
+                  cancel_url,
+                })
+
+              if (!session?.url) {
+                return {
+                  ok: false,
+                  why: 'checkout-session-creation-failed',
+                }
+              }
 
               return {
-                // statusCode: 200,
-                // body: JSON.stringify({ url: session.url })
+                ok: true,
+                url: session.url,
               }
             },
           },

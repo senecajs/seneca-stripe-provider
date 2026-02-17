@@ -25,13 +25,24 @@ function StripeProvider(options) {
             checkout: {
                 cmd: {
                     save: {
-                        action: async function (entize, msg) {
+                        action: async function (_entize, msg) {
                             const seneca = this;
-                            // const session = await seneca.shared.skd.checkout.sessions.create({
-                            // });
+                            const { item, mode, success_url, cancel_url } = msg.q;
+                            const session = await seneca.shared.skd.checkout.sessions.create({
+                                line_items: [item],
+                                mode,
+                                success_url,
+                                cancel_url,
+                            });
+                            if (!session?.url) {
+                                return {
+                                    ok: false,
+                                    why: 'checkout-session-creation-failed'
+                                };
+                            }
                             return {
-                            // statusCode: 200,
-                            // body: JSON.stringify({ url: session.url })
+                                ok: true,
+                                url: session.url
                             };
                         },
                     },

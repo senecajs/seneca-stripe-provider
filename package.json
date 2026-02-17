@@ -50,7 +50,6 @@
   },
   "peerDependencies": {
     "@seneca/entity-util": ">=3",
-    "@seneca/env": ">=0.5",
     "@seneca/provider": ">=3",
     "gubu": ">=9",
     "seneca": ">=3||>=4.0.0-rc2",

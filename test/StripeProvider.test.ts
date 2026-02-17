@@ -1,4 +1,5 @@
 /* Copyright © 2026 Seneca Project Contributors, MIT License. */
+import * as Fs from 'fs'
 
 import { describe, test } from 'node:test'
 import { expect } from '@hapi/code'
@@ -9,6 +10,12 @@ import Seneca from 'seneca'
 
 import StripeProviderDoc from '..'
 import StripeProvider from '..'
+
+const CONFIG: any = {}
+
+if (Fs.existsSync(__dirname + '/../test/local-config.js')) {
+  Object.assign(CONFIG, require(__dirname + '/../test/local-config.js'))
+}
 
 describe('stripe-provider', () => {
   test('load-plugin', async () => {
@@ -24,6 +31,11 @@ describe('stripe-provider', () => {
     })
   })
 
+  test('create-checkout', async () => {
+    expect(StripeProvider).exist()
+    expect(StripeProviderDoc).exist()
+  })
+
   // test('messages', async () => {
   //   const seneca = await makeSeneca()
   //   await (SenecaMsgTest(seneca, BasicMessages)())
@@ -35,18 +47,11 @@ async function makeSeneca() {
     .test()
     .use('promisify')
     .use('entity')
-    .use('env', {
-      // debug: true,
-      file: [__dirname + '/../test/local-env.js;?'],
-      var: {
-        $STRIPE_SECRET: String,
-      },
-    })
     .use('provider', {
       provider: {
         stripe: {
           keys: {
-            secret: { value: '$STRIPE_SECRET' },
+            secret: { value: CONFIG.STRIPE_SECRET },
           },
         },
       },

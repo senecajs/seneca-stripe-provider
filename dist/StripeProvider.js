@@ -25,13 +25,25 @@ function StripeProvider(options) {
             checkout: {
                 cmd: {
                     save: {
-                        action: async function (entize, msg) {
+                        action: async function (_entize, msg) {
                             const seneca = this;
-                            // const session = await seneca.shared.skd.checkout.sessions.create({
-                            // });
+                            const { item, mode, success_url, cancel_url } = msg.q;
+                            const payload = {
+                                line_items: [item],
+                                mode,
+                                success_url,
+                                cancel_url,
+                            };
+                            const session = await seneca.shared.sdk.checkout.sessions.create(payload);
+                            if (!session?.url) {
+                                return {
+                                    ok: false,
+                                    why: 'checkout-session-creation-failed',
+                                };
+                            }
                             return {
-                            // statusCode: 200,
-                            // body: JSON.stringify({ url: session.url })
+                                ok: true,
+                                url: session.url,
                             };
                         },
                     },
@@ -46,7 +58,9 @@ function StripeProvider(options) {
             this.fail('secretkey-missing-keymap', res);
         }
         let secretKey = res.keymap.secret.value;
-        seneca.shared.sdk = new stripe_1.default(secretKey);
+        if (secretKey) {
+            seneca.shared.sdk = new stripe_1.default(secretKey);
+        }
     });
     return {
         exports: {

@@ -91,7 +91,9 @@ function StripeProvider(this: any, options: StripeProviderOptions) {
 
     let secretKey = res.keymap.secret.value
 
-    seneca.shared.sdk = new Stripe(secretKey)
+    if (secretKey) {
+      seneca.shared.sdk = new Stripe(secretKey)
+    }
   })
 
   return {

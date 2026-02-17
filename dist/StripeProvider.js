@@ -37,12 +37,12 @@ function StripeProvider(options) {
                             if (!session?.url) {
                                 return {
                                     ok: false,
-                                    why: 'checkout-session-creation-failed'
+                                    why: 'checkout-session-creation-failed',
                                 };
                             }
                             return {
                                 ok: true,
-                                url: session.url
+                                url: session.url,
                             };
                         },
                     },
@@ -57,7 +57,9 @@ function StripeProvider(options) {
             this.fail('secretkey-missing-keymap', res);
         }
         let secretKey = res.keymap.secret.value;
-        seneca.shared.sdk = new stripe_1.default(secretKey);
+        if (secretKey) {
+            seneca.shared.sdk = new stripe_1.default(secretKey);
+        }
     });
     return {
         exports: {

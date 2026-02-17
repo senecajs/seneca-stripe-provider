@@ -1,1 +1,1 @@
-{"version":3,"file":"StripeProvider.d.ts","sourceRoot":"","sources":["../src/StripeProvider.ts"],"names":[],"mappings":"AAyBA,KAAK,qBAAqB,GAAG;IAC3B,KAAK,EAAE,OAAO,CAAA;CACf,CAAA;AAGD,iBAAS,cAAc,CAAC,IAAI,EAAE,GAAG,EAAE,OAAO,EAAE,qBAAqB;;;;EAwEhE;AASD,eAAe,cAAc,CAAA"}
+{"version":3,"file":"StripeProvider.d.ts","sourceRoot":"","sources":["../src/StripeProvider.ts"],"names":[],"mappings":"AAwBA,KAAK,qBAAqB,GAAG;IAC3B,KAAK,EAAE,OAAO,CAAA;CACf,CAAA;AAED,iBAAS,cAAc,CAAC,IAAI,EAAE,GAAG,EAAE,OAAO,EAAE,qBAAqB;;;;EA2EhE;AASD,eAAe,cAAc,CAAA"}

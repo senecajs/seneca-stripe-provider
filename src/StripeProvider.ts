@@ -41,47 +41,49 @@ function StripeProvider(this: any, options: StripeProviderOptions) {
     }
   }
 
-  entityBuilder(seneca, {
-    provider: {
-      name: 'stripe',
-    },
-    entity: {
-      checkout: {
-        cmd: {
-          save: {
-            action: async function (this: any, _entize: any, msg: any) {
-              const seneca = this
+  // TODO: entityBuilder is undefined on npm run doc
+  entityBuilder &&
+    entityBuilder(seneca, {
+      provider: {
+        name: 'stripe',
+      },
+      entity: {
+        checkout: {
+          cmd: {
+            save: {
+              action: async function (this: any, _entize: any, msg: any) {
+                const seneca = this
 
-              const { item, mode, success_url, cancel_url }: CheckoutQuery =
-                msg.q
+                const { item, mode, success_url, cancel_url }: CheckoutQuery =
+                  msg.q
 
-              const payload = {
-                line_items: [item],
-                mode,
-                success_url,
-                cancel_url,
-              }
-
-              const session: { url: string } =
-                await seneca.shared.sdk.checkout.sessions.create(payload)
-
-              if (!session?.url) {
-                return {
-                  ok: false,
-                  why: 'checkout-session-creation-failed',
+                const payload = {
+                  line_items: [item],
+                  mode,
+                  success_url,
+                  cancel_url,
                 }
-              }
 
-              return {
-                ok: true,
-                url: session.url,
-              }
+                const session: { url: string } =
+                  await seneca.shared.sdk.checkout.sessions.create(payload)
+
+                if (!session?.url) {
+                  return {
+                    ok: false,
+                    why: 'checkout-session-creation-failed',
+                  }
+                }
+
+                return {
+                  ok: true,
+                  url: session.url,
+                }
+              },
             },
           },
         },
       },
-    },
-  })
+    })
 
   seneca.prepare(async function (this: any) {
     let seneca = this
@@ -101,7 +103,7 @@ function StripeProvider(this: any, options: StripeProviderOptions) {
 
   return {
     exports: {
-      sdk: () => this.shared.sdk,
+      sdk: () => seneca.shared.sdk,
     },
   }
 }

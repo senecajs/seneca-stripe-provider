@@ -17,40 +17,42 @@ function StripeProvider(options) {
             version: package_json_1.default.version,
         };
     }
-    entityBuilder(seneca, {
-        provider: {
-            name: 'stripe',
-        },
-        entity: {
-            checkout: {
-                cmd: {
-                    save: {
-                        action: async function (_entize, msg) {
-                            const seneca = this;
-                            const { item, mode, success_url, cancel_url } = msg.q;
-                            const payload = {
-                                line_items: [item],
-                                mode,
-                                success_url,
-                                cancel_url,
-                            };
-                            const session = await seneca.shared.sdk.checkout.sessions.create(payload);
-                            if (!session?.url) {
-                                return {
-                                    ok: false,
-                                    why: 'checkout-session-creation-failed',
+    // TODO: entityBuilder is undefined on npm run doc
+    entityBuilder &&
+        entityBuilder(seneca, {
+            provider: {
+                name: 'stripe',
+            },
+            entity: {
+                checkout: {
+                    cmd: {
+                        save: {
+                            action: async function (_entize, msg) {
+                                const seneca = this;
+                                const { item, mode, success_url, cancel_url } = msg.q;
+                                const payload = {
+                                    line_items: [item],
+                                    mode,
+                                    success_url,
+                                    cancel_url,
                                 };
-                            }
-                            return {
-                                ok: true,
-                                url: session.url,
-                            };
+                                const session = await seneca.shared.sdk.checkout.sessions.create(payload);
+                                if (!session?.url) {
+                                    return {
+                                        ok: false,
+                                        why: 'checkout-session-creation-failed',
+                                    };
+                                }
+                                return {
+                                    ok: true,
+                                    url: session.url,
+                                };
+                            },
                         },
                     },
                 },
             },
-        },
-    });
+        });
     seneca.prepare(async function () {
         let seneca = this;
         let res = await seneca.post('sys:provider,get:keymap,provider:stripe');
@@ -64,7 +66,7 @@ function StripeProvider(options) {
     });
     return {
         exports: {
-            sdk: () => this.shared.sdk,
+            sdk: () => seneca.shared.sdk,
         },
     };
 }

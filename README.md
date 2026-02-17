@@ -67,55 +67,37 @@ $ npm install @seneca/tangocard-provider @seneca/env
 
 <!--START:options-->
 
+
 ## Options
 
-- `debug` : boolean <i><small>false</small></i>
+* `debug` : boolean
+* `init$` : boolean
 
-Set plugin options when loading with:
-
-```js
-
-
-seneca.use('TangocardProvider', { name: value, ... })
-
-
-```
-
-<small>Note: <code>foo.bar</code> in the list above means
-<code>{ foo: { bar: ... } }</code></small>
 
 <!--END:options-->
 
 <!--START:action-list-->
 
+
 ## Action Patterns
 
-- [role:entity,base:tangocard,cmd:load,name:repo,zone:provider](#-roleentitybasetangocardcmdloadnamerepozoneprovider-)
-- [role:entity,base:tangocard,cmd:save,name:repo,zone:provider](#-roleentitybasetangocardcmdsavenamerepozoneprovider-)
-- [sys:provider,get:info,provider:tangocard](#-sysprovidergetinfoprovidertangocard-)
+* [sys:provider,get:info,provider:stripe](#-sysprovidergetinfoproviderstripe-)
+
 
 <!--END:action-list-->
 
 <!--START:action-desc-->
 
+
 ## Action Descriptions
 
-### &laquo; `role:entity,base:tangocard,cmd:load,name:repo,zone:provider` &raquo;
+### &laquo; `sys:provider,get:info,provider:stripe` &raquo;
 
-Load Tangocard repository data into an entity.
+Get information about the Stripe plugin.
 
----
 
-### &laquo; `role:entity,base:tangocard,cmd:save,name:repo,zone:provider` &raquo;
 
-Update Tangocard repository data from an entity.
+----------
 
----
-
-### &laquo; `sys:provider,get:info,provider:tangocard` &raquo;
-
-Get information about the provider.
-
----
 
 <!--END:action-desc-->

@@ -76,7 +76,7 @@ if (Fs.existsSync(__dirname + '/../test/local-config.js')) {
                 success_url: 'https://store.example/success?session_id={CHECKOUT_SESSION_ID}',
                 cancel_url: 'https://store.example/cancel',
             });
-            console.log('create-checkout ', session);
+            // console.log('create-checkout ', session)
             (0, code_1.expect)(session.id).exists();
             (0, code_1.expect)(session.url).exists();
             (0, code_1.expect)(session.status).equals('open');
@@ -104,7 +104,7 @@ if (Fs.existsSync(__dirname + '/../test/local-config.js')) {
             const loaded = await seneca
                 .entity('provider/stripe/checkout')
                 .load$(created.id);
-            console.log('load-checkout ', loaded);
+            // console.log('load-checkout ', loaded)
             (0, code_1.expect)(loaded.id).equals(created.id);
             (0, code_1.expect)(loaded.status).equals('open');
         }
@@ -115,7 +115,7 @@ if (Fs.existsSync(__dirname + '/../test/local-config.js')) {
             const sessions = await seneca
                 .entity('provider/stripe/checkout')
                 .list$({ limit: 5 });
-            console.log('list-checkout ', sessions);
+            // console.log('list-checkout ', sessions)
             (0, code_1.expect)(sessions).array();
         }
     });

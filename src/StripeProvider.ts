@@ -1,30 +1,14 @@
 /* Copyright © 2026 Seneca Project Contributors, MIT License. */
+
 import Stripe from 'stripe'
 
 import Pkg from '../package.json'
 
-type Currency = 'usd' | 'eur' | 'gbp'
-type Mode = 'payment' | 'subscription' | 'setup'
-
-type Item = {
-  price_data: {
-    currency: Currency
-    product_data: { name: string }
-    unit_amount: number
-  }
-  quantity: number
-}
-
-type CheckoutQuery = {
-  item: Item
-  mode: Mode
-  success_url: string
-  cancel_url: string
-}
-
-type StripeProviderOptions = {
-  debug: boolean
-}
+import type {
+  StripeProviderOptions,
+  CheckoutCreateParams,
+  CheckoutListParams,
+} from './StripeProviderTypes.js'
 
 function StripeProvider(this: any, options: StripeProviderOptions) {
   const seneca: any = this
@@ -41,7 +25,7 @@ function StripeProvider(this: any, options: StripeProviderOptions) {
     }
   }
 
-  // TODO: entityBuilder is undefined on npm run doc
+  // NOTE: entityBuilder is undefined when running `npm run doc`
   entityBuilder &&
     entityBuilder(seneca, {
       provider: {
@@ -51,34 +35,35 @@ function StripeProvider(this: any, options: StripeProviderOptions) {
         checkout: {
           cmd: {
             save: {
-              action: async function (this: any, _entize: any, msg: any) {
-                const seneca = this
-
-                const { item, mode, success_url, cancel_url }: CheckoutQuery =
-                  msg.q
-
-                const payload = {
-                  line_items: [item],
-                  mode,
-                  success_url,
-                  cancel_url,
-                }
-
-                const session: { id: string; url: string } =
-                  await seneca.shared.sdk.checkout.sessions.create(payload)
-
-                if (!session?.url) {
-                  return {
-                    ok: false,
-                    why: 'checkout-session-creation-failed',
-                  }
-                }
-
-                return {
-                  ok: true,
-                  id: session.id,
-                  url: session.url,
-                }
+              action: async function (this: any, entize: any, msg: any) {
+                const q: CheckoutCreateParams = msg.q
+                const session: Stripe.Checkout.Session =
+                  await seneca.shared.sdk.checkout.sessions.create(q)
+                return entize(session)
+              },
+            },
+            load: {
+              action: async function (this: any, entize: any, msg: any) {
+                const session: Stripe.Checkout.Session =
+                  await seneca.shared.sdk.checkout.sessions.retrieve(msg.q.id)
+                return entize(session)
+              },
+            },
+            list: {
+              action: async function (this: any, entize: any, msg: any) {
+                const q: CheckoutListParams = msg.q
+                const result: Stripe.ApiList<Stripe.Checkout.Session> =
+                  await seneca.shared.sdk.checkout.sessions.list(q)
+                return result.data.map((session: Stripe.Checkout.Session) =>
+                  entize(session),
+                )
+              },
+            },
+            remove: {
+              action: async function (this: any, entize: any, msg: any) {
+                const session: Stripe.Checkout.Session =
+                  await seneca.shared.sdk.checkout.sessions.expire(msg.q.id)
+                return entize(session)
               },
             },
           },
@@ -109,7 +94,6 @@ function StripeProvider(this: any, options: StripeProviderOptions) {
   }
 }
 
-// Default options.
 const defaults: StripeProviderOptions = {
   debug: false,
 }

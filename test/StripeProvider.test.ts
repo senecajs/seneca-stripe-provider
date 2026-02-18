@@ -33,10 +33,10 @@ describe('stripe-provider', () => {
     if (CONFIG.STRIPE_SECRET) {
       const seneca = await makeSeneca()
 
-      const checkoutRes = await seneca
-        .entity('provider/stripe/checkout')
-        .save$({
-          item: {
+      const session = await seneca.entity('provider/stripe/checkout').save$({
+        mode: 'payment',
+        line_items: [
+          {
             price_data: {
               currency: 'usd',
               product_data: { name: 'Item - $1' },
@@ -44,15 +44,61 @@ describe('stripe-provider', () => {
             },
             quantity: 1,
           },
-          mode: 'payment',
-          success_url:
-            'https://store.example/success?session_id={CHECKOUT_SESSION_ID}',
-          cancel_url: 'https://store.example/cancel',
-        })
+        ],
+        success_url:
+          'https://store.example/success?session_id={CHECKOUT_SESSION_ID}',
+        cancel_url: 'https://store.example/cancel',
+      })
 
-      expect(checkoutRes.ok).true()
-      expect(checkoutRes.id).exists()
-      expect(checkoutRes.url).exists()
+      // console.log('create-checkout ', session)
+      expect(session.id).exists()
+      expect(session.url).exists()
+      expect(session.status).equals('open')
+    }
+  })
+
+  test('load-checkout', async () => {
+    if (CONFIG.STRIPE_SECRET) {
+      const seneca = await makeSeneca()
+
+      const created = await seneca.entity('provider/stripe/checkout').save$({
+        mode: 'payment',
+        line_items: [
+          {
+            price_data: {
+              currency: 'usd',
+              product_data: { name: 'Load Test Item' },
+              unit_amount: 100,
+            },
+            quantity: 1,
+          },
+        ],
+        success_url: 'https://store.example/success',
+        cancel_url: 'https://store.example/cancel',
+      })
+
+      expect(created.id).exists()
+
+      const loaded = await seneca
+        .entity('provider/stripe/checkout')
+        .load$(created.id)
+
+      // console.log('load-checkout ', loaded)
+      expect(loaded.id).equals(created.id)
+      expect(loaded.status).equals('open')
+    }
+  })
+
+  test('list-checkout', async () => {
+    if (CONFIG.STRIPE_SECRET) {
+      const seneca = await makeSeneca()
+
+      const sessions = await seneca
+        .entity('provider/stripe/checkout')
+        .list$({ limit: 5 })
+
+      // console.log('list-checkout ', sessions)
+      expect(sessions).array()
     }
   })
 })

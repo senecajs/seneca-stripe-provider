@@ -67,21 +67,27 @@ $ npm install @seneca/stripe-provider
 
 <!--START:options-->
 
+
 ## Options
 
-- `debug` : boolean
+* `debug` : boolean
+* `init$` : boolean
+
 
 <!--END:options-->
 
 <!--START:action-list-->
 
+
 ## Action Patterns
 
-- [sys:provider,get:info,provider:stripe](#-sysprovidergetinfoproviderstripe-)
+* [sys:provider,get:info,provider:stripe](#-sysprovidergetinfoproviderstripe-)
+
 
 <!--END:action-list-->
 
 <!--START:action-desc-->
+
 
 ## Action Descriptions
 
@@ -89,7 +95,10 @@ $ npm install @seneca/stripe-provider
 
 Get information about the Stripe plugin.
 
----
+
+
+----------
+
 
 <!--END:action-desc-->
 

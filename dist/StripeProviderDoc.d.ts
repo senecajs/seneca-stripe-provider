@@ -3,22 +3,22 @@ declare const docs: {
         get_info: {
             desc: string;
         };
-    };
-    entity: {
-        checkout: {
-            desc: string;
-            cmd: {
-                save: {
-                    desc: string;
-                };
-                load: {
-                    desc: string;
-                };
-                list: {
-                    desc: string;
-                };
-                remove: {
-                    desc: string;
+        entity: {
+            checkout: {
+                desc: string;
+                cmd: {
+                    save: {
+                        desc: string;
+                    };
+                    load: {
+                        desc: string;
+                    };
+                    list: {
+                        desc: string;
+                    };
+                    remove: {
+                        desc: string;
+                    };
                 };
             };
         };

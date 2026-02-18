@@ -1,6 +1,6 @@
 {
   "name": "@seneca/stripe-provider",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "main": "dist/StripeProvider.js",
   "type": "common.js",
   "types": "dist/StripeProvider.d.ts",

@@ -1,6 +1,4 @@
-type StripeProviderOptions = {
-    debug: boolean;
-};
+import type { StripeProviderOptions } from './StripeProviderTypes.js';
 declare function StripeProvider(this: any, options: StripeProviderOptions): {
     exports: {
         sdk: () => any;

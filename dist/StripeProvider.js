@@ -1,9 +1,9 @@
 "use strict";
+/* Copyright © 2026 Seneca Project Contributors, MIT License. */
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-/* Copyright © 2026 Seneca Project Contributors, MIT License. */
 const stripe_1 = __importDefault(require("stripe"));
 const package_json_1 = __importDefault(require("../package.json"));
 function StripeProvider(options) {
@@ -17,7 +17,7 @@ function StripeProvider(options) {
             version: package_json_1.default.version,
         };
     }
-    // TODO: entityBuilder is undefined on npm run doc
+    // NOTE: entityBuilder is undefined when running `npm run doc`
     entityBuilder &&
         entityBuilder(seneca, {
             provider: {
@@ -27,27 +27,29 @@ function StripeProvider(options) {
                 checkout: {
                     cmd: {
                         save: {
-                            action: async function (_entize, msg) {
-                                const seneca = this;
-                                const { item, mode, success_url, cancel_url } = msg.q;
-                                const payload = {
-                                    line_items: [item],
-                                    mode,
-                                    success_url,
-                                    cancel_url,
-                                };
-                                const session = await seneca.shared.sdk.checkout.sessions.create(payload);
-                                if (!session?.url) {
-                                    return {
-                                        ok: false,
-                                        why: 'checkout-session-creation-failed',
-                                    };
-                                }
-                                return {
-                                    ok: true,
-                                    id: session.id,
-                                    url: session.url,
-                                };
+                            action: async function (entize, msg) {
+                                const q = msg.q;
+                                const session = await seneca.shared.sdk.checkout.sessions.create(q);
+                                return entize(session);
+                            },
+                        },
+                        load: {
+                            action: async function (entize, msg) {
+                                const session = await seneca.shared.sdk.checkout.sessions.retrieve(msg.q.id);
+                                return entize(session);
+                            },
+                        },
+                        list: {
+                            action: async function (entize, msg) {
+                                const q = msg.q;
+                                const result = await seneca.shared.sdk.checkout.sessions.list(q);
+                                return result.data.map((session) => entize(session));
+                            },
+                        },
+                        remove: {
+                            action: async function (entize, msg) {
+                                const session = await seneca.shared.sdk.checkout.sessions.expire(msg.q.id);
+                                return entize(session);
                             },
                         },
                     },
@@ -71,7 +73,6 @@ function StripeProvider(options) {
         },
     };
 }
-// Default options.
 const defaults = {
     debug: false,
 };

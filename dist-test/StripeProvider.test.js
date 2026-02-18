@@ -61,24 +61,62 @@ if (Fs.existsSync(__dirname + '/../test/local-config.js')) {
     (0, node_test_1.test)('create-checkout', async () => {
         if (CONFIG.STRIPE_SECRET) {
             const seneca = await makeSeneca();
-            const checkoutRes = await seneca
-                .entity('provider/stripe/checkout')
-                .save$({
-                item: {
-                    price_data: {
-                        currency: 'usd',
-                        product_data: { name: 'Item - $1' },
-                        unit_amount: 100,
-                    },
-                    quantity: 1,
-                },
+            const session = await seneca.entity('provider/stripe/checkout').save$({
                 mode: 'payment',
+                line_items: [
+                    {
+                        price_data: {
+                            currency: 'usd',
+                            product_data: { name: 'Item - $1' },
+                            unit_amount: 100,
+                        },
+                        quantity: 1,
+                    },
+                ],
                 success_url: 'https://store.example/success?session_id={CHECKOUT_SESSION_ID}',
                 cancel_url: 'https://store.example/cancel',
             });
-            (0, code_1.expect)(checkoutRes.ok).true();
-            (0, code_1.expect)(checkoutRes.id).exists();
-            (0, code_1.expect)(checkoutRes.url).exists();
+            // console.log('create-checkout ', session)
+            (0, code_1.expect)(session.id).exists();
+            (0, code_1.expect)(session.url).exists();
+            (0, code_1.expect)(session.status).equals('open');
+        }
+    });
+    (0, node_test_1.test)('load-checkout', async () => {
+        if (CONFIG.STRIPE_SECRET) {
+            const seneca = await makeSeneca();
+            const created = await seneca.entity('provider/stripe/checkout').save$({
+                mode: 'payment',
+                line_items: [
+                    {
+                        price_data: {
+                            currency: 'usd',
+                            product_data: { name: 'Load Test Item' },
+                            unit_amount: 100,
+                        },
+                        quantity: 1,
+                    },
+                ],
+                success_url: 'https://store.example/success',
+                cancel_url: 'https://store.example/cancel',
+            });
+            (0, code_1.expect)(created.id).exists();
+            const loaded = await seneca
+                .entity('provider/stripe/checkout')
+                .load$(created.id);
+            // console.log('load-checkout ', loaded)
+            (0, code_1.expect)(loaded.id).equals(created.id);
+            (0, code_1.expect)(loaded.status).equals('open');
+        }
+    });
+    (0, node_test_1.test)('list-checkout', async () => {
+        if (CONFIG.STRIPE_SECRET) {
+            const seneca = await makeSeneca();
+            const sessions = await seneca
+                .entity('provider/stripe/checkout')
+                .list$({ limit: 5 });
+            // console.log('list-checkout ', sessions)
+            (0, code_1.expect)(sessions).array();
         }
     });
 });

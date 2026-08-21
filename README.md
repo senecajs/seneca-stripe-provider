@@ -82,6 +82,19 @@ If you're using this module and need help, you can:
 
 ## API
 
+### Supported Entities
+
+#### `provider/stripe/checkout`
+
+Wraps [Stripe Checkout Sessions](https://stripe.com/docs/api/checkout/sessions).
+
+| Operation | Method                   | Description                          |
+| --------- | ------------------------ | ------------------------------------ |
+| Create    | `entity.save$(params)`   | Create a new Stripe Checkout Session |
+| Retrieve  | `entity.load$({ id })`   | Retrieve a Checkout Session by ID    |
+| List      | `entity.list$(params)`   | List Checkout Sessions               |
+| Expire    | `entity.remove$({ id })` | Expire (cancel) a Checkout Session   |
+
 ### Options
 
 * `debug` : boolean

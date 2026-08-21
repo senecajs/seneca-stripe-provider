@@ -1,24 +1,29 @@
-![Seneca Stripe-Provider](http://senecajs.org/files/assets/seneca-logo.png)
+![Seneca](http://senecajs.org/files/assets/seneca-logo.png)
+> A [Seneca.js](http://senecajs.org) plugin
 
-> _Seneca Stripe-Provider_ is a plugin for [Seneca](http://senecajs.org)
-
-Provides access to the Stripe API using the Seneca _provider_
-convention. Stripe API entities are represented as Seneca entities so
-that they can be accessed using the Seneca entity API and messages.
-
-See [seneca-entity](senecajs/seneca-entity) and the [Seneca Data
-Entities
-Tutorial](https://senecajs.org/docs/tutorials/understanding-data-entities.html) for more details on the Seneca entity API.
+# @seneca/stripe-provider
 
 [![npm version](https://img.shields.io/npm/v/@seneca/stripe-provider.svg)](https://npmjs.com/package/@seneca/stripe-provider)
 [![build](https://github.com/senecajs/seneca-stripe-provider/actions/workflows/build.yml/badge.svg)](https://github.com/senecajs/seneca-stripe-provider/actions/workflows/build.yml)
 [![Coverage Status](https://coveralls.io/repos/github/senecajs/seneca-stripe-provider/badge.svg?branch=main)](https://coveralls.io/github/senecajs/seneca-stripe-provider?branch=main)
 [![Known Vulnerabilities](https://snyk.io/test/github/senecajs/seneca-stripe-provider/badge.svg)](https://snyk.io/test/github/senecajs/seneca-stripe-provider)
-[![DeepScan grade](https://deepscan.io/api/teams/5016/projects/19462/branches/505954/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=5016&pid=19462&bid=505954)
 [![Maintainability](https://api.codeclimate.com/v1/badges/f76e83896b731bb5d609/maintainability)](https://codeclimate.com/github/senecajs/seneca-stripe-provider/maintainability)
 
 | ![Voxgig](https://www.voxgig.com/res/img/vgt01r.png) | This open source module is sponsored and supported by [Voxgig](https://www.voxgig.com). |
-| ---------------------------------------------------- | --------------------------------------------------------------------------------------- |
+|---|---|
+
+Provides access to the Stripe API using the Seneca _provider_
+convention. Stripe API entities are represented as Seneca entities so
+that they can be accessed using the Seneca entity API and messages.
+See [seneca-entity](senecajs/seneca-entity) and the [Seneca Data
+Entities
+Tutorial](https://senecajs.org/docs/tutorials/understanding-data-entities.html) for more details on the Seneca entity API.
+
+## Install
+
+```sh
+$ npm install @seneca/stripe-provider
+```
 
 ## Quick Example
 
@@ -59,37 +64,34 @@ let session = await seneca
 console.log('SESSION', session)
 ```
 
-## Install
+## More Examples
 
-```sh
-$ npm install @seneca/stripe-provider
-```
+See [test/](test/) for more usage examples.
 
-<!--START:options-->
+## Motivation
 
+A [Seneca.js](http://senecajs.org) plugin.
 
-## Options
+## Support
+
+If you're using this module and need help, you can:
+
+- Post a [github issue](https://github.com/senecajs/seneca-stripe-provider/issues)
+- Tweet to [@senecajs](http://twitter.com/senecajs)
+- Ask on the [Gitter](https://gitter.im/senecajs/seneca)
+
+## API
+
+### Options
 
 * `debug` : boolean
 * `init$` : boolean
 
-
-<!--END:options-->
-
-<!--START:action-list-->
-
-
-## Action Patterns
+### Action Patterns
 
 * [sys:provider,get:info,provider:stripe](#-sysprovidergetinfoproviderstripe-)
 
-
-<!--END:action-list-->
-
-<!--START:action-desc-->
-
-
-## Action Descriptions
+### Action Descriptions
 
 ### &laquo; `sys:provider,get:info,provider:stripe` &raquo;
 
@@ -99,18 +101,10 @@ Get information about the Stripe plugin.
 
 ----------
 
+## Contributing
 
-<!--END:action-desc-->
+The [Senecajs org](https://github.com/senecajs/) encourages open participation. If you feel you can help in any way, be it with documentation, examples, extra testing, or new features please get in touch.
 
-## Supported Entities
+## Background
 
-### `provider/stripe/checkout`
-
-Wraps [Stripe Checkout Sessions](https://stripe.com/docs/api/checkout/sessions).
-
-| Operation | Method                   | Description                          |
-| --------- | ------------------------ | ------------------------------------ |
-| Create    | `entity.save$(params)`   | Create a new Stripe Checkout Session |
-| Retrieve  | `entity.load$({ id })`   | Retrieve a Checkout Session by ID    |
-| List      | `entity.list$(params)`   | List Checkout Sessions               |
-| Expire    | `entity.remove$({ id })` | Expire (cancel) a Checkout Session   |
+Part of the [Senecajs org](https://github.com/senecajs/).

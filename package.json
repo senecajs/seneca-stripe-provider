@@ -1,8 +1,8 @@
 {
   "name": "@seneca/stripe-provider",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "main": "dist/StripeProvider.js",
-  "type": "common.js",
+  "type": "commonjs",
   "types": "dist/StripeProvider.d.ts",
   "description": "Seneca entity provider for the Stripe API.",
   "homepage": "https://github.com/senecajs/seneca-stripe-provider",
@@ -14,7 +14,10 @@
   "author": "Leonardo Cunha - leonardocunha.com",
   "repository": {
     "type": "git",
-    "url": "git://github.com/senecajs/seneca-stripe-provider.git"
+    "url": "git+https://github.com/senecajs/seneca-stripe-provider.git"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "prettier": "prettier --write .",
@@ -36,22 +39,23 @@
     "LICENSE"
   ],
   "engines": {
-    "node": ">=22"
+    "node": ">=24"
   },
   "devDependencies": {
     "@hapi/code": "^9.0.3",
-    "@seneca/doc": "^8.0.0",
+    "@seneca/doc": "^9.0.0",
+    "@seneca/entity": "^29.0.0",
     "@seneca/maintain": "^0.1.0",
+    "@seneca/provider": "^5.0.0",
     "@types/node": "^25.2.3",
     "prettier": "3.8.1",
+    "seneca": "^4.0.0",
     "typescript": "^5.9.3"
   },
   "peerDependencies": {
-    "@seneca/entity-util": ">=3",
-    "@seneca/provider": ">=3",
-    "seneca": ">=3||>=4.0.0-rc2",
-    "seneca-entity": ">=26",
-    "seneca-promisify": ">=3"
+    "@seneca/entity": "^29.0.0",
+    "@seneca/provider": "^5.0.0",
+    "seneca": "^4.0.0"
   },
   "dependencies": {
     "stripe": "^20.3.1"

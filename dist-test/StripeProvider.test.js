@@ -41,16 +41,26 @@ const Fs = __importStar(require("fs"));
 const node_test_1 = require("node:test");
 const code_1 = require("@hapi/code");
 const seneca_1 = __importDefault(require("seneca"));
+const StripeProviderDoc_1 = __importDefault(require("../dist/StripeProviderDoc"));
 const __1 = __importDefault(require(".."));
-const __2 = __importDefault(require(".."));
 const CONFIG = {};
 if (Fs.existsSync(__dirname + '/../test/local-config.js')) {
     Object.assign(CONFIG, require(__dirname + '/../test/local-config.js'));
 }
+// The environment wins over the local file, so that CI can supply the key.
+if (process.env.STRIPE_SECRET) {
+    CONFIG.STRIPE_SECRET = process.env.STRIPE_SECRET;
+}
+// The checkout tests call the Stripe API, so they need a test-mode key.
+const LIVE = CONFIG.STRIPE_SECRET
+    ? {}
+    : {
+        skip: 'needs a Stripe test-mode key: set STRIPE_SECRET (or STRIPE_SECRET in test/local-config.js)',
+    };
 (0, node_test_1.describe)('stripe-provider', () => {
     (0, node_test_1.test)('load-plugin', async () => {
-        (0, code_1.expect)(__2.default).exist();
         (0, code_1.expect)(__1.default).exist();
+        (0, code_1.expect)(StripeProviderDoc_1.default).exist();
         const seneca = await makeSeneca();
         (0, code_1.expect)(seneca.find_plugin('StripeProvider')).exist();
         (0, code_1.expect)(await seneca.post('sys:provider,provider:stripe,get:info')).contain({
@@ -58,74 +68,67 @@ if (Fs.existsSync(__dirname + '/../test/local-config.js')) {
             name: 'stripe',
         });
     });
-    (0, node_test_1.test)('create-checkout', async () => {
-        if (CONFIG.STRIPE_SECRET) {
-            const seneca = await makeSeneca();
-            const session = await seneca.entity('provider/stripe/checkout').save$({
-                mode: 'payment',
-                line_items: [
-                    {
-                        price_data: {
-                            currency: 'usd',
-                            product_data: { name: 'Item - $1' },
-                            unit_amount: 100,
-                        },
-                        quantity: 1,
+    (0, node_test_1.test)('create-checkout', LIVE, async () => {
+        const seneca = await makeSeneca();
+        const session = await seneca.entity('provider/stripe/checkout').save$({
+            mode: 'payment',
+            line_items: [
+                {
+                    price_data: {
+                        currency: 'usd',
+                        product_data: { name: 'Item - $1' },
+                        unit_amount: 100,
                     },
-                ],
-                success_url: 'https://store.example/success?session_id={CHECKOUT_SESSION_ID}',
-                cancel_url: 'https://store.example/cancel',
-            });
-            // console.log('create-checkout ', session)
-            (0, code_1.expect)(session.id).exists();
-            (0, code_1.expect)(session.url).exists();
-            (0, code_1.expect)(session.status).equals('open');
-        }
+                    quantity: 1,
+                },
+            ],
+            success_url: 'https://store.example/success?session_id={CHECKOUT_SESSION_ID}',
+            cancel_url: 'https://store.example/cancel',
+        });
+        // console.log('create-checkout ', session)
+        (0, code_1.expect)(session.id).exists();
+        (0, code_1.expect)(session.url).exists();
+        (0, code_1.expect)(session.status).equals('open');
     });
-    (0, node_test_1.test)('load-checkout', async () => {
-        if (CONFIG.STRIPE_SECRET) {
-            const seneca = await makeSeneca();
-            const created = await seneca.entity('provider/stripe/checkout').save$({
-                mode: 'payment',
-                line_items: [
-                    {
-                        price_data: {
-                            currency: 'usd',
-                            product_data: { name: 'Load Test Item' },
-                            unit_amount: 100,
-                        },
-                        quantity: 1,
+    (0, node_test_1.test)('load-checkout', LIVE, async () => {
+        const seneca = await makeSeneca();
+        const created = await seneca.entity('provider/stripe/checkout').save$({
+            mode: 'payment',
+            line_items: [
+                {
+                    price_data: {
+                        currency: 'usd',
+                        product_data: { name: 'Load Test Item' },
+                        unit_amount: 100,
                     },
-                ],
-                success_url: 'https://store.example/success',
-                cancel_url: 'https://store.example/cancel',
-            });
-            (0, code_1.expect)(created.id).exists();
-            const loaded = await seneca
-                .entity('provider/stripe/checkout')
-                .load$(created.id);
-            // console.log('load-checkout ', loaded)
-            (0, code_1.expect)(loaded.id).equals(created.id);
-            (0, code_1.expect)(loaded.status).equals('open');
-        }
+                    quantity: 1,
+                },
+            ],
+            success_url: 'https://store.example/success',
+            cancel_url: 'https://store.example/cancel',
+        });
+        (0, code_1.expect)(created.id).exists();
+        const loaded = await seneca
+            .entity('provider/stripe/checkout')
+            .load$(created.id);
+        // console.log('load-checkout ', loaded)
+        (0, code_1.expect)(loaded.id).equals(created.id);
+        (0, code_1.expect)(loaded.status).equals('open');
     });
-    (0, node_test_1.test)('list-checkout', async () => {
-        if (CONFIG.STRIPE_SECRET) {
-            const seneca = await makeSeneca();
-            const sessions = await seneca
-                .entity('provider/stripe/checkout')
-                .list$({ limit: 5 });
-            // console.log('list-checkout ', sessions)
-            (0, code_1.expect)(sessions).array();
-        }
+    (0, node_test_1.test)('list-checkout', LIVE, async () => {
+        const seneca = await makeSeneca();
+        const sessions = await seneca
+            .entity('provider/stripe/checkout')
+            .list$({ limit: 5 });
+        // console.log('list-checkout ', sessions)
+        (0, code_1.expect)(sessions).array();
     });
 });
 async function makeSeneca() {
     const seneca = (0, seneca_1.default)({ legacy: false })
         .test()
-        .use('promisify')
-        .use('entity')
-        .use('provider', {
+        .use('@seneca/entity')
+        .use('@seneca/provider', {
         provider: {
             stripe: {
                 keys: {
@@ -134,7 +137,7 @@ async function makeSeneca() {
             },
         },
     })
-        .use(__2.default);
+        .use(__1.default);
     return seneca.ready();
 }
 //# sourceMappingURL=StripeProvider.test.js.map

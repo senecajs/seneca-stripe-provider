@@ -6,7 +6,7 @@ Provides access to the Stripe API using the Seneca _provider_
 convention. Stripe API entities are represented as Seneca entities so
 that they can be accessed using the Seneca entity API and messages.
 
-See [seneca-entity](senecajs/seneca-entity) and the [Seneca Data
+See [@seneca/entity](https://github.com/senecajs/seneca-entity) and the [Seneca Data
 Entities
 Tutorial](https://senecajs.org/docs/tutorials/understanding-data-entities.html) for more details on the Seneca entity API.
 
@@ -24,14 +24,15 @@ Tutorial](https://senecajs.org/docs/tutorials/understanding-data-entities.html) 
 
 ```js
 // Setup - get the secret key separately from a vault or environment variable.
-Seneca()
-  // Load API keys using the seneca-env plugin
-  .use('env', {
+const seneca = Seneca()
+  .use('@seneca/entity')
+  // Load API keys using the @seneca/env plugin
+  .use('@seneca/env', {
     var: {
       $STRIPE_SECRETKEY: String,
     },
   })
-  .use('provider', {
+  .use('@seneca/provider', {
     provider: {
       stripe: {
         keys: {
@@ -40,7 +41,9 @@ Seneca()
       },
     },
   })
-  .use('stripe-provider')
+  .use('@seneca/stripe-provider')
+
+await seneca.ready()
 
 // Create a checkout session
 let checkout = await seneca.entity('provider/stripe/checkout').save$({
@@ -63,6 +66,12 @@ console.log('SESSION', session)
 
 ```sh
 $ npm install @seneca/stripe-provider
+```
+
+The plugin runs in a Seneca 4 host with the entity and provider plugins:
+
+```sh
+$ npm install seneca@^4 @seneca/entity @seneca/provider @seneca/env
 ```
 
 <!--START:options-->

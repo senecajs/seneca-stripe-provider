@@ -74,12 +74,32 @@ The plugin runs in a Seneca 4 host with the entity and provider plugins:
 $ npm install seneca@^4 @seneca/entity @seneca/provider @seneca/env
 ```
 
+## Stripe Client Options
+
+The `sdk` option is passed unchanged to the Stripe client constructor,
+`new Stripe(secretKey, sdk)`, and accepts any of its
+[configuration options](https://github.com/stripe/stripe-node#configuration).
+For example, to use a local [stripe-mock](https://github.com/stripe/stripe-mock)
+server, with any `sk_test_...` key:
+
+```js
+seneca.use('@seneca/stripe-provider', {
+  sdk: { host: '127.0.0.1', port: 12111, protocol: 'http' },
+})
+```
+
+The tests use it in the same way: with `SENECA_TEST_STRIPE_MOCK` set to the
+server's URL, such as `http://127.0.0.1:12111`, the checkout tests run against
+stripe-mock with a dummy key. Without it, they need a Stripe test-mode key in
+`STRIPE_SECRET`, and are skipped when neither is set.
+
 <!--START:options-->
 
 
 ## Options
 
 * `debug` : boolean
+* `sdk` : object
 * `init$` : boolean
 
 

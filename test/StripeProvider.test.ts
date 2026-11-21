@@ -18,16 +18,38 @@ if (Fs.existsSync(__dirname + '/../test/local-config.js')) {
   Object.assign(CONFIG, require(__dirname + '/../test/local-config.js'))
 }
 
-// The environment wins over the local file, so that CI can supply the key.
-if (process.env.STRIPE_SECRET) {
+// Stripe client options for the plugin's sdk option.
+let SDK: Record<string, any> = {}
+
+// SENECA_TEST_STRIPE_MOCK names a stripe-mock server, for example
+// http://127.0.0.1:12111. The checkout tests then run against it with a dummy
+// test-mode key, and never against the Stripe API, whatever else is set.
+// stripe-mock accepts only a key of the form sk_test_ plus letters or digits.
+const STRIPE_MOCK = process.env.SENECA_TEST_STRIPE_MOCK
+
+if (STRIPE_MOCK) {
+  const mock = new URL(STRIPE_MOCK)
+  const protocol = mock.protocol.replace(/:$/, '')
+  SDK = {
+    host: mock.hostname,
+    port: mock.port || ('https' === protocol ? 443 : 80),
+    protocol,
+  }
+  CONFIG.STRIPE_SECRET = 'sk_test_123'
+}
+
+// Otherwise the checkout tests call the Stripe API, with a test-mode key
+// from STRIPE_SECRET, which wins over the local file so that CI can supply it.
+else if (process.env.STRIPE_SECRET) {
   CONFIG.STRIPE_SECRET = process.env.STRIPE_SECRET
 }
 
-// The checkout tests call the Stripe API, so they need a test-mode key.
 const LIVE = CONFIG.STRIPE_SECRET
   ? {}
   : {
-      skip: 'needs a Stripe test-mode key: set STRIPE_SECRET (or STRIPE_SECRET in test/local-config.js)',
+      skip:
+        'needs SENECA_TEST_STRIPE_MOCK (a stripe-mock URL, for example http://127.0.0.1:12111) ' +
+        'or STRIPE_SECRET (a Stripe test-mode key, also read from test/local-config.js)',
     }
 
 describe('stripe-provider', () => {
@@ -42,6 +64,14 @@ describe('stripe-provider', () => {
       ok: true,
       name: 'stripe',
     })
+  })
+
+  // The sdk option is an open object: any Stripe client option passes.
+  test('sdk-option', async () => {
+    const seneca = await makeSeneca({
+      sdk: { maxNetworkRetries: 1, timeout: 20000, telemetry: false },
+    })
+    expect(seneca.find_plugin('StripeProvider')).exist()
   })
 
   test('create-checkout', LIVE, async () => {
@@ -112,7 +142,7 @@ describe('stripe-provider', () => {
   })
 })
 
-async function makeSeneca() {
+async function makeSeneca(options: Record<string, any> = { sdk: SDK }) {
   const seneca = Seneca({ legacy: false })
     .test()
     .use('@seneca/entity')
@@ -125,7 +155,7 @@ async function makeSeneca() {
         },
       },
     })
-    .use(StripeProvider)
+    .use(StripeProvider, options)
 
   return seneca.ready()
 }

@@ -2,6 +2,8 @@
 
 import Stripe from 'stripe'
 
+import type Seneca from 'seneca'
+
 import Pkg from '../package.json'
 
 import type {
@@ -83,7 +85,7 @@ function StripeProvider(this: any, options: StripeProviderOptions) {
     let secretKey = res.keymap.secret.value
 
     if (secretKey) {
-      seneca.shared.sdk = new Stripe(secretKey)
+      seneca.shared.sdk = new Stripe(secretKey, options.sdk)
     }
   })
 
@@ -94,9 +96,13 @@ function StripeProvider(this: any, options: StripeProviderOptions) {
   }
 }
 
-const defaults: StripeProviderOptions = {
+// Default options, built with the validator that Seneca passes in.
+const defaults = ({ valid }: { valid: Seneca.Instance['valid'] }) => ({
   debug: false,
-}
+
+  // Stripe client options: any keys, passed to the Stripe constructor.
+  sdk: valid.Open({}),
+})
 
 Object.assign(StripeProvider, { defaults })
 

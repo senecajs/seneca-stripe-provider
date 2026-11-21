@@ -1,5 +1,7 @@
+import type Stripe from 'stripe';
 type StripeProviderOptions = {
     debug: boolean;
+    sdk: Stripe.StripeConfig;
 };
 /** Stripe Checkout Session mode. */
 type StripeMode = 'payment' | 'subscription' | 'setup';

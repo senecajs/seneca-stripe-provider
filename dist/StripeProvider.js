@@ -64,7 +64,7 @@ function StripeProvider(options) {
         }
         let secretKey = res.keymap.secret.value;
         if (secretKey) {
-            seneca.shared.sdk = new stripe_1.default(secretKey);
+            seneca.shared.sdk = new stripe_1.default(secretKey, options.sdk);
         }
     });
     return {
@@ -73,9 +73,12 @@ function StripeProvider(options) {
         },
     };
 }
-const defaults = {
+// Default options, built with the validator that Seneca passes in.
+const defaults = ({ valid }) => ({
     debug: false,
-};
+    // Stripe client options: any keys, passed to the Stripe constructor.
+    sdk: valid.Open({}),
+});
 Object.assign(StripeProvider, { defaults });
 exports.default = StripeProvider;
 if ('undefined' !== typeof module) {

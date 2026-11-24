@@ -1,11 +1,17 @@
 /* Copyright © 2026 Seneca Project Contributors, MIT License. */
 
+import type Stripe from 'stripe'
+
 // ============================================================
 // Plugin Options
 // ============================================================
 
 type StripeProviderOptions = {
   debug: boolean
+
+  // Passed straight to the Stripe client constructor, for example
+  // { host, port, protocol } to reach a local stripe-mock server.
+  sdk: Stripe.StripeConfig
 }
 
 // ============================================================
